@@ -11,38 +11,44 @@ import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
-@Entity
-@AllArgsConstructor
+@Data // Lombok annotation to auto-generate getters, setters, and toString
+@Entity // Marks this class as a JPA entity (maps to a database table)
+@AllArgsConstructor // Generates a constructor with all fields
 public class Room {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Id // Primary key
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-incremented ID
     private Long id;
 
-    private String roomType;
+    private String roomType; // Type of the room (Single, Double, Suite, etc.)
+    private BigDecimal roomPrice; // Price of the room
+    private boolean isBooked = false; // Whether the room is currently booked
 
-    private BigDecimal roomPrice;
-
-    private boolean isBooked = false;
-
-    @Lob
+    @Lob // Stores large binary objects (photo of the room)
     private Blob photo;
 
-    @OneToMany(fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL) // One room can have multiple bookings
     private List<BookedRoom> bookings;
 
+    // Default constructor initializes the bookings list
     public Room() {
         this.bookings = new ArrayList<>();
     }
 
+    // Method to add a new booking to the room
     public void addBooking(BookedRoom booking){
-        if(bookings == null){
+        if (bookings == null) {
             bookings = new ArrayList<>();
         }
 
+        // Add booking to the list and set the reference back to the room
         bookings.add(booking);
         booking.setRoom(this);
+
+        // Mark the room as booked
         isBooked = true;
+
+        // Generate a 10-digit booking confirmation code
         String bookingCode = RandomStringUtils.randomNumeric(10);
         booking.setBookingConfirmationCode(bookingCode);
     }
