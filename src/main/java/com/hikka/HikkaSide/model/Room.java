@@ -27,7 +27,7 @@ public class Room {
     @Lob // Stores large binary objects (photo of the room)
     private Blob photo;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL) // One room can have multiple bookings
+    @OneToMany(mappedBy = "room" , fetch = FetchType.LAZY, cascade = CascadeType.ALL) // One room can have multiple bookings
     private List<BookedRoom> bookings;
 
     // Default constructor initializes the bookings list
